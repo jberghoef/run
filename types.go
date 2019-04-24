@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 	"reflect"
 	"strings"
 
@@ -15,9 +16,10 @@ import (
 )
 
 func RunfileConstructor(path string) Runfile {
-	r := Runfile{Path: path}
+	r := Runfile{}
+	r.Path, r.Filename = filepath.Split(path)
 
-	file, err := ioutil.ReadFile(r.Path)
+	file, err := ioutil.ReadFile(r.FilePath())
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
@@ -33,6 +35,12 @@ func RunfileConstructor(path string) Runfile {
 type Runfile struct {
 	Commands yaml.MapSlice
 	Path     string
+	Filename string
+	Offset   int
+}
+
+func (r *Runfile) FilePath() string {
+	return filepath.Join(r.Path, r.Filename)
 }
 
 func (r *Runfile) FindCommand(name interface{}) (m yaml.MapItem, err error) {

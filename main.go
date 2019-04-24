@@ -56,7 +56,7 @@ func main() {
 			}
 
 			if !found {
-				color.Red("Command \"%s\" not found.\n", request)
+				color.Red("command \"%s\" not found.\n", request)
 			}
 		}
 	}
