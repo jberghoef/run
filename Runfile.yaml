@@ -1,0 +1,42 @@
+update:
+  - brew update
+  - brew upgrade
+  - upgrade_oh_my_zsh
+  - pyenv update
+
+echo: echo hello world
+env: echo ${ENV_VALUE}
+home: echo ${HOME}
+
+test:
+  commands:
+    - echo halt
+    - echo and
+    - echo catch
+    - echo fire
+
+  something:
+    optional: true
+    commands:
+     - echo say
+     - echo {{.Something}}
+     - echo loving
+
+  anything:
+    command: echo {{.Something}}
+
+test2:
+  env:
+    ENV_VALUE_2: env2
+    ENV_VALUE_3: env3
+  commands:
+    - echo ${ENV_VALUE_2}
+    - echo ${ENV_VALUE_3}
+    - :echo
+
+commit:
+  - :echo
+  - git add .
+  - git status
+  - git commit -m "{{.Message}}"
+  - git push
