@@ -7,7 +7,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"regexp"
 	"strings"
 
 	"github.com/fatih/color"
@@ -45,8 +44,7 @@ func execute(command string) {
 
 	color.Green("#! %s\n", result.String())
 
-	re := regexp.MustCompile(`["'].+?["']|\S+`)
-	parts := re.FindAllString(result.String(), -1)
+	parts := cRe.FindAllString(result.String(), -1)
 	cmd := exec.Command(parts[0], parts[1:]...)
 
 	cmd.Stdout = os.Stdout

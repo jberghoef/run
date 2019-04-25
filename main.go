@@ -14,6 +14,7 @@ var filename = "Runfile.yaml"
 var requests []string
 var eRe *regexp.Regexp
 var vRe *regexp.Regexp
+var cRe *regexp.Regexp
 var context map[string]string
 
 func init() {
@@ -29,6 +30,7 @@ func init() {
 	requests = flag.Args()
 	eRe = regexp.MustCompile(`\${(?P<Key>\S+)}`)
 	vRe = regexp.MustCompile(`{{2}\.(?P<Key>\S+)}{2}`)
+	cRe = regexp.MustCompile(`["'].+?["']|\S+`)
 	context = make(map[string]string)
 }
 
