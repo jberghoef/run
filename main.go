@@ -39,26 +39,31 @@ func main() {
 
 	if len(files) > 0 {
 		if len(requests) == 0 {
-			file := files[0]
-			for _, command := range file.Commands {
-				requests = append(requests, command.Key.(string))
-			}
-		}
-
-		for _, request := range requests {
-			found := false
-			for _, runfile := range files {
-				c, err := runfile.FindCommand(request)
+			runfile := files[0]
+			for _, command := range runfile.Commands {
+				c, err := runfile.FindCommand(command.Key.(string))
 				if err != nil {
 					continue
 				}
 
-				found = true
 				runfile.ProcessCommand(c)
 			}
+		} else {
+			for _, request := range requests {
+				found := false
+				for _, runfile := range files {
+					c, err := runfile.FindCommand(request)
+					if err != nil {
+						continue
+					}
 
-			if !found {
-				color.Red("command \"%s\" not found.\n", request)
+					found = true
+					runfile.ProcessCommand(c)
+				}
+
+				if !found {
+					color.Red("command \"%s\" not found.\n", request)
+				}
 			}
 		}
 	}
