@@ -17,6 +17,13 @@ var vRe *regexp.Regexp
 var cRe *regexp.Regexp
 var context map[string]string
 
+/* TODO:
+- Add timer function
+	- Per request
+	- Total time
+	- End report
+*/
+
 func init() {
 	flag.StringVar(&filename, "file", filename, "The file to run commands from")
 	flag.Parse()
