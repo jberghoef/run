@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"path/filepath"
 	"regexp"
@@ -43,6 +44,7 @@ func init() {
 
 func main() {
 	files := findRunfiles()
+	fmt.Println(files)
 
 	if len(files) > 0 {
 		if len(requests) == 0 {
@@ -66,6 +68,7 @@ func main() {
 
 					found = true
 					runfile.ProcessCommand(c)
+					break
 				}
 
 				if !found {
