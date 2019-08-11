@@ -1,8 +1,6 @@
 update:
   - brew update
   - brew upgrade
-  - upgrade_oh_my_zsh
-  - pyenv update
 
 echo: echo hello world
 env: echo ${ENV_VALUE}
