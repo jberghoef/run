@@ -17,8 +17,10 @@ func findRunfiles() (runfiles []Runfile) {
 	dir, _ := filepath.Split(filename)
 	parts := strings.Split(dir, string(filepath.Separator))
 	for i := len(parts) - 1; i > 0; i-- {
-		p := append(parts[:i], "Runfile.yaml")
-		tests = append(tests, string(filepath.Separator)+filepath.Join(p...))
+		for _, extension := range []string{"yml", "yaml"} {
+			p := append(parts[:i], "Runfile."+extension)
+			tests = append(tests, string(filepath.Separator)+filepath.Join(p...))
+		}
 	}
 
 	for _, test := range tests {
