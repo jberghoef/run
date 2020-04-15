@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"html/template"
 	"log"
 	"os"
@@ -33,6 +34,9 @@ func findRunfiles() (runfiles []Runfile) {
 }
 
 func execute(command string) {
+	shell := os.Getenv("SHELL")
+	fmt.Println(shell)
+
 	tmpl, err := template.New("test").Parse(command)
 	if err != nil {
 		log.Fatal(err)
