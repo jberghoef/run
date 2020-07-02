@@ -15,6 +15,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// RunfileConstructor ...
 func RunfileConstructor(path string) Runfile {
 	r := Runfile{}
 	r.Path, r.Filename = filepath.Split(path)
@@ -32,6 +33,7 @@ func RunfileConstructor(path string) Runfile {
 	return r
 }
 
+// Runfile ...
 type Runfile struct {
 	Commands yaml.MapSlice
 	Path     string
@@ -39,10 +41,12 @@ type Runfile struct {
 	Offset   int
 }
 
+// FilePath ...
 func (r *Runfile) FilePath() string {
 	return filepath.Join(r.Path, r.Filename)
 }
 
+// FindCommand ...
 func (r *Runfile) FindCommand(name interface{}) (m yaml.MapItem, err error) {
 	for _, command := range r.Commands {
 		if command.Key.(string) == name.(string) {
@@ -55,6 +59,7 @@ func (r *Runfile) FindCommand(name interface{}) (m yaml.MapItem, err error) {
 	return
 }
 
+// ProcessCommand ...
 func (r *Runfile) ProcessCommand(command interface{}) {
 	t := reflect.TypeOf(command)
 
@@ -88,6 +93,7 @@ func (r *Runfile) ProcessCommand(command interface{}) {
 	}
 }
 
+// ProcessEnv ...
 func (r *Runfile) ProcessEnv(env interface{}) {
 	t := reflect.TypeOf(env)
 	if t.Kind() == reflect.Map {

@@ -5,12 +5,3 @@ build:
 
 test:
 	go test -v
-
-reset:
-	rm -rf cache.db
-
-install:
-	dep ensure
-
-update:
-	dep ensure -update

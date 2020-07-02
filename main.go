@@ -10,6 +10,7 @@ import (
 )
 
 var filename = "Runfile.yaml"
+var verbose = false
 
 var requests []string
 var eRe *regexp.Regexp
@@ -19,6 +20,7 @@ var context map[string]string
 
 func init() {
 	flag.StringVar(&filename, "file", filename, "The file to run commands from")
+	flag.BoolVar(&verbose, "verbose", verbose, "Whether to show additional information")
 	flag.Parse()
 
 	path, err := filepath.Abs(filename)

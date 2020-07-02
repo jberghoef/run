@@ -1,9 +1,4 @@
-update:
-  - brew update
-  - brew upgrade
-
 echo: echo hello world
-env: echo ${ENV_VALUE}
 home: echo ${HOME}
 
 test:
@@ -13,15 +8,15 @@ test:
     - echo catch
     - echo fire
 
-  something:
-    optional: true
-    commands:
-     - echo say
-     - echo {{.Something}}
-     - echo loving
+something:
+  optional: true
+  commands:
+    - echo say
+    - echo {{.Something}}
+    - echo loving
 
-  anything:
-    command: echo {{.Something}}
+anything:
+  command: echo {{.Something}}
 
 test2:
   env:
@@ -31,10 +26,3 @@ test2:
     - echo ${ENV_VALUE_2}
     - echo ${ENV_VALUE_3}
     - :echo
-
-commit:
-  - :echo
-  - git add .
-  - git status
-  - git commit -m "{{.Message}}"
-  - git push
