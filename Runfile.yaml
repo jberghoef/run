@@ -8,7 +8,7 @@ test:
   - echo fire
 
 something:
-  optional: true
+  optional: Would you like to print something?
   commands:
     - echo say
     - echo {{.Something}}

@@ -181,7 +181,8 @@ func (r *Runfile) handleMap(input map[interface{}]interface{}) {
 
 	options := input
 	if input["optional"] != nil {
-		if input["optional"].(bool) {
+		if input["optional"].(string) != "" {
+			color.Yellow(input["optional"].(string))
 			reader := bufio.NewReader(os.Stdin)
 			fmt.Print("Execute command (Y/n): ")
 			text, _ := reader.ReadString('\n')
