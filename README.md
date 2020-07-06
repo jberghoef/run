@@ -50,8 +50,8 @@ anything:
 
 test2:
   env: # Set environment variables before executing.
-    ENV_VALUE_2: env2
-    ENV_VALUE_3: env3
+    ENV_VALUE_2: halt and catch fire
+    ENV_VALUE_3: ✋ 🔥
   commands:
     - echo ${ENV_VALUE_2}
     - echo ${ENV_VALUE_3}
