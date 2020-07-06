@@ -2,11 +2,10 @@ echo: echo hello world
 home: echo ${HOME}
 
 test:
-  commands:
-    - echo halt
-    - echo and
-    - echo catch
-    - echo fire
+  - echo halt
+  - echo and
+  - echo catch
+  - echo fire
 
 something:
   optional: true

@@ -11,16 +11,18 @@ import (
 
 var filename = "Runfile.yaml"
 var verbose = false
+var debug = false
 
 var requests []string
-var eRe *regexp.Regexp
-var vRe *regexp.Regexp
-var cRe *regexp.Regexp
+var envRe *regexp.Regexp
+var varRe *regexp.Regexp
+var cmdRe *regexp.Regexp
 var context map[string]string
 
 func init() {
 	flag.StringVar(&filename, "file", filename, "The file to run commands from")
 	flag.BoolVar(&verbose, "verbose", verbose, "Whether to show additional information")
+	flag.BoolVar(&debug, "debug", debug, "Whether to show debugging information")
 	flag.Parse()
 
 	path, err := filepath.Abs(filename)
@@ -30,9 +32,9 @@ func init() {
 	filename = path
 
 	requests = flag.Args()
-	eRe = regexp.MustCompile(`\${(?P<Key>\S+)}`)
-	vRe = regexp.MustCompile(`{{2}\.(?P<Key>\S+)}{2}`)
-	cRe = regexp.MustCompile(`["'].+?["']|\S+`)
+	envRe = regexp.MustCompile(`\${(?P<Key>\S+)}`)
+	varRe = regexp.MustCompile(`{{2}\.(?P<Key>\S+)}{2}`)
+	cmdRe = regexp.MustCompile(`["'].+?["']|\S+`)
 	context = make(map[string]string)
 }
 

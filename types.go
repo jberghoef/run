@@ -48,6 +48,8 @@ func (r *Runfile) FilePath() string {
 
 // FindCommand ...
 func (r *Runfile) FindCommand(name interface{}) (m yaml.MapItem, err error) {
+	debugPrintf("FindCommand: %+v\n", name)
+
 	for _, command := range r.Commands {
 		if command.Key.(string) == name.(string) {
 			m = command
@@ -61,9 +63,12 @@ func (r *Runfile) FindCommand(name interface{}) (m yaml.MapItem, err error) {
 
 // ProcessCommand ...
 func (r *Runfile) ProcessCommand(command interface{}) {
+	debugPrintf("└ ProcessCommand: %+v\n", command)
+
 	t := reflect.TypeOf(command)
 
 	if m, ok := command.(yaml.MapSlice); ok {
+		debugPrintf("  └ Found MapSlice: %+v\n", m)
 		for _, command := range m {
 			r.ProcessCommand(command)
 		}
@@ -72,6 +77,7 @@ func (r *Runfile) ProcessCommand(command interface{}) {
 
 	switch t.Kind() {
 	case reflect.String:
+		debugPrintf("  └ Found String: %+v\n", command)
 		if strings.HasPrefix(command.(string), ":") {
 			cmd, err := r.FindCommand(strings.Replace(command.(string), ":", "", 1))
 			if err != nil {
@@ -83,10 +89,13 @@ func (r *Runfile) ProcessCommand(command interface{}) {
 			r.handleString(command)
 		}
 	case reflect.Slice:
+		debugPrintf("  └ Found Slice: %+v\n", command)
 		r.handleArray(command.([]interface{}))
 	case reflect.Map:
+		debugPrintf("  └ Found Map: %+v\n", command)
 		r.handleMap(command.(map[interface{}]interface{}))
 	case reflect.TypeOf(yaml.MapItem{}).Kind():
+		debugPrintf("  └ Found MapItem: %+v\n", command)
 		r.ProcessCommand(command.(yaml.MapItem).Value)
 	default:
 		color.Red("Can't handle command of kind %s.\n", t.Kind())
@@ -95,10 +104,15 @@ func (r *Runfile) ProcessCommand(command interface{}) {
 
 // ProcessEnv ...
 func (r *Runfile) ProcessEnv(env interface{}) {
+	debugPrintf("└ ProcessEnv: %+v\n", env)
+
 	t := reflect.TypeOf(env)
 	if t.Kind() == reflect.Map {
 		for key, value := range env.(map[interface{}]interface{}) {
 			os.Setenv(key.(string), value.(string))
+			if verbose {
+				color.Cyan("$%s %s", key, value)
+			}
 		}
 	} else {
 		color.Red("env has to be a map", env)
@@ -106,11 +120,15 @@ func (r *Runfile) ProcessEnv(env interface{}) {
 }
 
 func (r *Runfile) handleString(input interface{}) {
-	matches := vRe.FindAllStringSubmatch(input.(string), -1)
+	debugPrintf("    └ handleString: %+v\n", input)
+
+	matches := varRe.FindAllStringSubmatch(input.(string), -1)
 	for i := range matches {
 		name := matches[i][1]
 
 		if _, ok := context[name]; !ok {
+			debugPrintf("    └ requestVariable: %+v\n", name)
+
 			reader := bufio.NewReader(os.Stdin)
 			color.Yellow(fmt.Sprintf("Enter value for variable '%s': ", name))
 			text, _ := reader.ReadString('\n')
@@ -118,8 +136,8 @@ func (r *Runfile) handleString(input interface{}) {
 		}
 	}
 
-	input = eRe.ReplaceAllStringFunc(input.(string), func(s string) string {
-		match := eRe.FindAllStringSubmatch(s, -1)
+	input = envRe.ReplaceAllStringFunc(input.(string), func(s string) string {
+		match := envRe.FindAllStringSubmatch(s, -1)
 		value, set := os.LookupEnv(match[0][1])
 		if set {
 			return value
@@ -131,14 +149,17 @@ func (r *Runfile) handleString(input interface{}) {
 }
 
 func (r *Runfile) handleArray(input []interface{}) {
+	debugPrintf("    └ handleArray: %+v\n", input)
+
 	for _, line := range input {
 		r.ProcessCommand(line)
 	}
 }
 
 func (r *Runfile) handleMap(input map[interface{}]interface{}) {
-	options := input
+	debugPrintf("    └ handleMap: %+v\n", input)
 
+	options := input
 	if input["optional"] != nil {
 		if input["optional"].(bool) {
 			reader := bufio.NewReader(os.Stdin)

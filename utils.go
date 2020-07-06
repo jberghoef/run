@@ -32,7 +32,7 @@ func findRunfiles() (runfiles []Runfile) {
 	return
 }
 
-func execute(command string) {
+func execute(command string) error {
 	tmpl, err := template.New("test").Parse(command)
 	if err != nil {
 		log.Fatal(err)
@@ -44,13 +44,36 @@ func execute(command string) {
 		log.Fatal(err)
 	}
 
-	color.Green("#! %s\n", result.String())
+	if verbose {
+		color.Green("#! %s\n", result.String())
+	}
 
-	parts := cRe.FindAllString(result.String(), -1)
+	parts := cmdRe.FindAllString(result.String(), -1)
 	cmd := exec.Command(parts[0], parts[1:]...)
 
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	cmd.Run()
+	return cmd.Run()
+}
+
+func debugPrintln(a ...interface{}) {
+	c := color.New(color.Faint)
+	if debug {
+		c.Println(a...)
+	}
+}
+
+func debugPrint(a ...interface{}) {
+	c := color.New(color.Faint)
+	if debug {
+		c.Print(a...)
+	}
+}
+
+func debugPrintf(format string, a ...interface{}) {
+	c := color.New(color.Faint)
+	if debug {
+		c.Printf(format, a...)
+	}
 }
