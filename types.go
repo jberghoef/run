@@ -63,9 +63,25 @@ func (r *Runfile) FindCommand(name interface{}) (m yaml.MapItem, err error) {
 
 // ProcessCommand ...
 func (r *Runfile) ProcessCommand(command interface{}) {
-	debugPrintf("└ ProcessCommand: %+v\n", command)
+	debugPrintf("└ ProcessCommand: %v\n", command)
 
 	t := reflect.TypeOf(command)
+
+	if m, ok := command.(yaml.MapItem); ok {
+		debugPrintf("  └ Found MapItem: %+v\n", m)
+
+		if s, ok := m.Value.(yaml.MapSlice); ok {
+			p := make(map[interface{}]interface{})
+			for _, item := range s {
+				p[item.Key] = item.Value
+			}
+			r.handleMap(p)
+		} else {
+			r.ProcessCommand(m.Value)
+		}
+
+		return
+	}
 
 	if m, ok := command.(yaml.MapSlice); ok {
 		debugPrintf("  └ Found MapSlice: %+v\n", m)
@@ -94,9 +110,6 @@ func (r *Runfile) ProcessCommand(command interface{}) {
 	case reflect.Map:
 		debugPrintf("  └ Found Map: %+v\n", command)
 		r.handleMap(command.(map[interface{}]interface{}))
-	case reflect.TypeOf(yaml.MapItem{}).Kind():
-		debugPrintf("  └ Found MapItem: %+v\n", command)
-		r.ProcessCommand(command.(yaml.MapItem).Value)
 	default:
 		color.Red("Can't handle command of kind %s.\n", t.Kind())
 	}
@@ -104,7 +117,7 @@ func (r *Runfile) ProcessCommand(command interface{}) {
 
 // ProcessEnv ...
 func (r *Runfile) ProcessEnv(env interface{}) {
-	debugPrintf("└ ProcessEnv: %+v\n", env)
+	debugPrintf("└ ProcessEnv: %v\n", env)
 
 	t := reflect.TypeOf(env)
 	if t.Kind() == reflect.Map {
@@ -112,6 +125,13 @@ func (r *Runfile) ProcessEnv(env interface{}) {
 			os.Setenv(key.(string), value.(string))
 			if verbose {
 				color.Cyan("$%s %s", key, value)
+			}
+		}
+	} else if m, ok := env.(yaml.MapSlice); ok {
+		for _, e := range m {
+			os.Setenv(e.Key.(string), e.Value.(string))
+			if verbose {
+				color.Cyan("$%s %s", e.Key, e.Value)
 			}
 		}
 	} else {
