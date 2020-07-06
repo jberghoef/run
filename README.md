@@ -12,6 +12,21 @@ go get -u -v github.com/jberghoef/run
 go install -v github.com/jberghoef/run
 ```
 
+## Usage
+```bash
+run # Run the entire Runfile closest the the current directory.
+run echo # Run a command named 'echo' in the first Runefile found.
+run echo test # Run a command named 'echo' and 'test'.
+```
+
+### Flags
+```bash
+run --file ../src/Runfile.yaml # Run the entire Runfile provided.
+run --file ../src/Runfile.yaml test # Run a command named 'test' in the Runfile provided.
+run --verbose test # Run a command named 'test', use verbose logging.
+run --debug test # Run a command named 'test', use debug logging.
+```
+
 ## Example file
 ```yaml
 echo: echo hello world # Execute a command directly.
