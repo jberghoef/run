@@ -44,6 +44,7 @@ func main() {
 	if len(files) > 0 {
 		if len(requests) == 0 {
 			runfile := files[0]
+			debugPrintf("Active runfile: %s\n", runfile.Path+runfile.Filename)
 			for _, command := range runfile.Commands {
 				c, err := runfile.FindCommand(command.Key.(string))
 				if err != nil {
@@ -62,6 +63,7 @@ func main() {
 					}
 
 					found = true
+					debugPrintf("Selected runfile: %s\n", runfile.Path+runfile.Filename)
 					runfile.ProcessCommand(c)
 					break
 				}

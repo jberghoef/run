@@ -38,7 +38,6 @@ type Runfile struct {
 	Commands yaml.MapSlice
 	Path     string
 	Filename string
-	Offset   int
 }
 
 // FilePath ...
