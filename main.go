@@ -57,13 +57,13 @@ func main() {
 			for _, request := range requests {
 				found := false
 				for _, runfile := range files {
+					debugPrintf("Scanning runfile: %s\n", runfile.Path+runfile.Filename)
 					c, err := runfile.FindCommand(request)
 					if err != nil {
 						continue
 					}
 
 					found = true
-					debugPrintf("Selected runfile: %s\n", runfile.Path+runfile.Filename)
 					runfile.ProcessCommand(c)
 					break
 				}
