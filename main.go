@@ -10,7 +10,6 @@ import (
 )
 
 var filename = "Runfile.yaml"
-var verbose = false
 var debug = false
 
 var requests []string
@@ -21,7 +20,6 @@ var context map[string]string
 
 func init() {
 	flag.StringVar(&filename, "file", filename, "The file to run commands from")
-	flag.BoolVar(&verbose, "verbose", verbose, "Whether to show additional information")
 	flag.BoolVar(&debug, "debug", debug, "Whether to show debugging information")
 	flag.Parse()
 

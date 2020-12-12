@@ -44,9 +44,7 @@ func execute(command string) error {
 		log.Fatal(err)
 	}
 
-	if verbose {
-		color.Green("#! %s\n", result.String())
-	}
+	color.Green("#! %s\n", result.String())
 
 	parts := cmdRe.FindAllString(result.String(), -1)
 	cmd := exec.Command(parts[0], parts[1:]...)

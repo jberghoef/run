@@ -122,16 +122,12 @@ func (r *Runfile) ProcessEnv(env interface{}) {
 	if t.Kind() == reflect.Map {
 		for key, value := range env.(map[interface{}]interface{}) {
 			os.Setenv(key.(string), value.(string))
-			if verbose {
-				color.Cyan("$%s %s", key, value)
-			}
+			color.Cyan("$%s %s", key, value)
 		}
 	} else if m, ok := env.(yaml.MapSlice); ok {
 		for _, e := range m {
 			os.Setenv(e.Key.(string), e.Value.(string))
-			if verbose {
-				color.Cyan("$%s %s", e.Key, e.Value)
-			}
+			color.Cyan("$%s %s", e.Key, e.Value)
 		}
 	} else {
 		color.Red("env has to be a map", env)

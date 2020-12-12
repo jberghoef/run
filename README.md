@@ -23,7 +23,6 @@ run echo test # Run a command named 'echo' and 'test'.
 ```bash
 run --file ../src/Runfile.yaml # Run the entire Runfile provided.
 run --file ../src/Runfile.yaml test # Run a command named 'test' in the Runfile provided.
-run --verbose test # Run a command named 'test', use verbose logging.
 run --debug test # Run a command named 'test', use debug logging.
 ```
 
