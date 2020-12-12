@@ -2,7 +2,9 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
+	"os"
 	"path/filepath"
 	"regexp"
 
@@ -10,6 +12,7 @@ import (
 )
 
 var filename = "Runfile.yaml"
+var list = false
 var debug = false
 
 var requests []string
@@ -20,6 +23,7 @@ var context map[string]string
 
 func init() {
 	flag.StringVar(&filename, "file", filename, "The file to run commands from")
+	flag.BoolVar(&list, "list", list, "List available Runfiles and their commands")
 	flag.BoolVar(&debug, "debug", debug, "Whether to show debugging information")
 	flag.Parse()
 
@@ -39,10 +43,20 @@ func init() {
 func main() {
 	files := findRunfiles()
 
+	if list {
+		for _, file := range files {
+			fmt.Printf("Runfile: %s\n", file.Path+file.Filename)
+			for _, command := range file.Commands {
+				fmt.Printf("└ %s\n", command.Key)
+			}
+		}
+		os.Exit(0)
+	}
+
 	if len(files) > 0 {
 		if len(requests) == 0 {
 			runfile := files[0]
-			debugPrintf("Active runfile: %s\n", runfile.Path+runfile.Filename)
+			debugPrintf("Runfile: %s\n", runfile.Path+runfile.Filename)
 			for _, command := range runfile.Commands {
 				c, err := runfile.FindCommand(command.Key.(string))
 				if err != nil {
@@ -55,7 +69,7 @@ func main() {
 			for _, request := range requests {
 				found := false
 				for _, runfile := range files {
-					debugPrintf("Scanning runfile: %s\n", runfile.Path+runfile.Filename)
+					debugPrintf("Runfile: %s\n", runfile.Path+runfile.Filename)
 					c, err := runfile.FindCommand(request)
 					if err != nil {
 						continue

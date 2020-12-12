@@ -13,7 +13,7 @@ import (
 )
 
 func findRunfiles() (runfiles []Runfile) {
-	tests := []string{filename}
+	tests := []string{}
 	dir, _ := filepath.Split(filename)
 	parts := strings.Split(dir, string(filepath.Separator))
 	for i := len(parts) - 1; i > 0; i-- {
